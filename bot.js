@@ -1,22 +1,24 @@
 const mineflayer = require('mineflayer');
 const pathfinder = require('mineflayer-pathfinder');
-const Vec3 = require('vec3');
 const { goals } = pathfinder;
+const Vec3 = require('vec3');
+
 const bot = mineflayer.createBot({
-  host: 'play.bcstore.uk', // Ganti dengan alamat server Anda
-  port: 25565,
-  username: 'OfficialBot',
-  version: '1.21.4',
-  auth: 'offline',
+  host: 'play.bcstore.uk',  // Server address
+  port: 25565,  // Port default Minecraft (untuk Java Edition)
+  username: 'Official', // Nama bot Anda
+  version: '1.21.4', // Sesuaikan dengan versi server
+  // Jika menggunakan Bedrock, Floodgate harus terpasang di server
 });
 
+// Muat plugin pathfinder dengan benar
 bot.loadPlugin(pathfinder);
 
 // Menggerakkan bot secara acak untuk menghindari AFK
 function moveRandomly() {
   setInterval(() => {
-    const targetX = Math.floor(Math.random() * 10) + 1;  // Ubah jarak bergerak secara acak
-    const targetY = 0; // Selalu di level tanah
+    const targetX = Math.floor(Math.random() * 10) + 1;  // Jarak acak bergerak
+    const targetY = 0;  // Tingkat tanah
     const targetZ = Math.floor(Math.random() * 10) + 1;
 
     bot.pathfinder.setGoal(new goals.GoalBlock(targetX, targetY, targetZ));
