@@ -1,48 +1,42 @@
 const mineflayer = require('mineflayer');
-const { setInterval } = require('timers');
-
+const pathfinder = require('mineflayer-pathfinder');
+const Vec3 = require('vec3');
+const { goals } = pathfinder;
 const bot = mineflayer.createBot({
-  host: 'server-address', // Ganti dengan alamat server Minecraft kamu
-  port: 25565, // Ganti dengan port server kamu
-  username: 'bot-email@example.com', // Ganti dengan email Minecraft bot
-  auth: 'microsoft', // Jika kamu menggunakan akun Microsoft
+  host: 'play.bcstore.uk', // Ganti dengan alamat server Anda
+  port: 25565,
+  username: 'OfficialBot',
+  version: '1.21.4',
 });
 
-bot.on('spawn', () => {
-  console.log('Bot is online');
-  
-  // Membuat bot bergerak dan berputar secara acak
+bot.loadPlugin(pathfinder);
+
+// Menggerakkan bot secara acak untuk menghindari AFK
+function moveRandomly() {
   setInterval(() => {
-    moveRandomly();
-    rotateRandomly();
-  }, 3000); // Setiap 3 detik sekali bot akan bergerak dan berputar acak
+    const targetX = Math.floor(Math.random() * 10) + 1;  // Ubah jarak bergerak secara acak
+    const targetY = 0; // Selalu di level tanah
+    const targetZ = Math.floor(Math.random() * 10) + 1;
+
+    bot.pathfinder.setGoal(new goals.GoalBlock(targetX, targetY, targetZ));
+  }, 5000); // Setiap 5 detik
+}
+
+bot.on('spawn', () => {
+  console.log('Bot has spawned!');
+  moveRandomly();
+});
+
+bot.on('chat', (username, message) => {
+  if (message === 'ping') {
+    bot.chat('Pong!');
+  }
 });
 
 bot.on('error', (err) => {
-  console.error('Bot encountered an error:', err);
+  console.log('Bot error:', err);
 });
 
 bot.on('end', () => {
   console.log('Bot disconnected');
 });
-
-// Fungsi untuk membuat bot bergerak acak
-function moveRandomly() {
-  const x = Math.random() * 2 - 1; // Acak antara -1 dan 1
-  const z = Math.random() * 2 - 1; // Acak antara -1 dan 1
-  bot.setControlState('forward', true);
-  
-  bot.setTimeout(() => {
-    bot.setControlState('forward', false);
-  }, 500 + Math.random() * 1000); // Bot bergerak maju selama 500-1500 ms
-  
-  bot.lookAt(bot.entity.position.offset(x, 0, z));
-}
-
-// Fungsi untuk membuat bot berputar acak
-function rotateRandomly() {
-  const yaw = Math.random() * 360; // Rotasi acak dalam 360 derajat
-  const pitch = Math.random() * 180 - 90; // Rotasi vertikal acak antara -90 dan 90
-  
-  bot.look(yaw, pitch, true); // Mengarahkan bot ke sudut acak
-}
