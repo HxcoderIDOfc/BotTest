@@ -1,0 +1,19 @@
+version: 1
+services:
+  bot:
+    type: node
+    name: mineflayer-bot
+    env:
+      NODE_ENV: production
+    build:
+      dockerfilePath: ./Dockerfile
+    deploy:
+      restart: always
+      memory: 1GB
+    web:
+      health:
+        path: /health
+        port: 3000
+    commands:
+      - npm install
+      - npm run start
