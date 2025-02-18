@@ -7,6 +7,7 @@ const bot = mineflayer.createBot({
   port: 25565,
   username: 'OfficialBot',
   version: '1.21.4',
+  auth: 'offline',
 });
 
 bot.loadPlugin(pathfinder);
