@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#07111f" />
+  <title>Nextura Chat Test</title>
+  <style>
+    :root{--bg:#07111f;--panel:#0d1a2c;--panel2:#101f34;--line:#233855;--text:#edf5ff;--muted:#8ea4c4;--accent:#5b8cff;--good:#27c870;--bad:#ff5f6d;--user:#1c3f78;--bot:#111f33}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}button,input,select,textarea{font:inherit}
+    body{min-height:100dvh;display:flex;justify-content:center;background:radial-gradient(circle at 50% -20%,#17345f 0,transparent 38%),var(--bg)}
+    .app{width:min(980px,100%);min-height:100dvh;display:grid;grid-template-rows:auto auto 1fr auto}
+    header{padding:18px 20px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #172a43;background:#07111fd9;backdrop-filter:blur(14px);position:sticky;top:0;z-index:5}
+    .brand{display:flex;gap:12px;align-items:center}.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(145deg,#6ea0ff,#6b5cff);display:grid;place-items:center;font-weight:900;box-shadow:0 10px 30px #315db755}.brand h1{font-size:18px;margin:0}.brand p{font-size:12px;color:var(--muted);margin:3px 0 0}.status{font-size:12px;display:flex;align-items:center;gap:7px;color:var(--muted)}.dot{width:9px;height:9px;border-radius:50%;background:#697b96}.dot.ok{background:var(--good);box-shadow:0 0 12px #27c87088}.dot.err{background:var(--bad)}
+    .settings{padding:12px 20px;display:grid;grid-template-columns:2fr 1fr auto auto;gap:10px;border-bottom:1px solid #172a43;background:#091525}.field{display:flex;flex-direction:column;gap:5px}.field label,.toggle span{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em}.field input,.field select{height:40px;border:1px solid var(--line);background:#0b1727;color:var(--text);border-radius:11px;padding:0 12px;outline:none}.field input:focus,.field select:focus,textarea:focus{border-color:#5b8cff}
+    .toggle{min-width:95px;height:40px;align-self:end;border:1px solid var(--line);border-radius:11px;padding:0 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#0b1727;cursor:pointer}.toggle input{accent-color:var(--accent)}
+    .chat{padding:22px 20px 160px;overflow:auto}.empty{text-align:center;margin:13vh auto 0;max-width:560px;color:var(--muted)}.empty .hero{font-size:42px;margin-bottom:14px}.empty h2{color:var(--text);font-size:24px;margin:0 0 8px}.empty p{line-height:1.6;margin:0}
+    .msg{display:flex;margin:14px 0}.msg.user{justify-content:flex-end}.bubble{max-width:min(780px,88%);border-radius:18px;padding:13px 15px;line-height:1.58;white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid transparent}.user .bubble{background:var(--user);border-bottom-right-radius:5px}.assistant .bubble{background:var(--bot);border-color:#1e3553;border-bottom-left-radius:5px}.meta{font-size:11px;color:#8096b5;margin-top:9px;border-top:1px solid #ffffff12;padding-top:7px}.error .bubble{border-color:#7d2c36;background:#2b141b;color:#ffdbe0}
+    .composer{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(980px,100%);padding:12px 20px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent,#07111f 18%);z-index:4}.composeBox{border:1px solid var(--line);background:#0c192a;border-radius:18px;padding:10px;box-shadow:0 18px 50px #0007}.composeRow{display:flex;align-items:flex-end;gap:9px}.composeRow textarea{width:100%;min-height:46px;max-height:170px;resize:none;background:transparent;border:0;color:var(--text);outline:none;padding:11px 10px;line-height:1.45}.send{width:46px;height:46px;border:0;border-radius:13px;background:var(--accent);color:white;font-size:20px;font-weight:800;cursor:pointer}.send:disabled{opacity:.45;cursor:not-allowed}.hint{display:flex;justify-content:space-between;gap:8px;padding:5px 8px 0;color:#7085a3;font-size:10px}.clear{border:0;background:transparent;color:#8ba8d2;cursor:pointer;padding:0}
+    @media(max-width:720px){.settings{grid-template-columns:1fr 1fr}.field.key{grid-column:1/-1}.toggle{width:100%}.chat{padding-inline:12px}.composer{padding-inline:10px}.bubble{max-width:94%}header{padding-inline:14px}.settings{padding-inline:12px}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><div class="logo">N</div><div><h1>Nextura AI</h1><p>Nextura Cortexa Max · Web Test</p></div></div>
+    <div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Belum dites</span></div>
+  </header>
+
+  <section class="settings">
+    <div class="field key"><label>API Key</label><input id="apiKey" type="password" autocomplete="off" placeholder="Masukkan NEXTURA_API_KEY" /></div>
+    <div class="field"><label>Thinking</label><select id="thinking"><option value="cepat">Cepat</option><option value="sedang">Sedang</option><option value="tinggi">Tinggi</option><option value="super">Super</option></select></div>
+    <label class="toggle"><span>Search</span><input id="search" type="checkbox" /></label>
+    <label class="toggle"><span>Review</span><input id="review" type="checkbox" checked /></label>
+  </section>
+
+  <main id="chat" class="chat">
+    <div id="empty" class="empty"><div class="hero">✦</div><h2>Test Nextura Cortexa Max</h2><p>Masukkan API key, pilih level thinking, lalu kirim pertanyaan. API key hanya disimpan lokal di browser ini dan tidak ada di source GitHub.</p></div>
+  </main>
+
+  <div class="composer">
+    <div class="composeBox">
+      <div class="composeRow"><textarea id="prompt" rows="1" placeholder="Tanya Nextura…"></textarea><button id="send" class="send" aria-label="Kirim">↑</button></div>
+      <div class="hint"><span>Enter kirim · Shift+Enter baris baru</span><button id="clear" class="clear">Hapus chat</button></div>
+    </div>
+  </div>
+</div>
+<script>
+const API_URL='https://tropical-bobbie-redcore-99fcb114.koyeb.app/v1/chat/completions';
+const MODEL='Nextura/cortexa-max';
+const $=id=>document.getElementById(id);
+const chat=$('chat'), prompt=$('prompt'), send=$('send'), apiKey=$('apiKey');
+let history=[];
+
+apiKey.value=localStorage.getItem('nextura_test_key')||'';
+$('thinking').value=localStorage.getItem('nextura_thinking')||'cepat';
+$('search').checked=localStorage.getItem('nextura_search')==='1';
+$('review').checked=localStorage.getItem('nextura_review')!=='0';
+
+function setStatus(type,text){$('statusDot').className='dot'+(type?' '+type:'');$('statusText').textContent=text}
+function escapeHtml(s=''){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function addMessage(role,text,meta='',error=false){$('empty')?.remove();const wrap=document.createElement('div');wrap.className='msg '+role+(error?' error':'');wrap.innerHTML=`<div class="bubble">${escapeHtml(text)}${meta?`<div class="meta">${escapeHtml(meta)}</div>`:''}</div>`;chat.appendChild(wrap);window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});return wrap}
+function resize(){prompt.style.height='auto';prompt.style.height=Math.min(prompt.scrollHeight,170)+'px'}
+prompt.addEventListener('input',resize);
+prompt.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();submit()}});
+$('clear').onclick=()=>{history=[];chat.innerHTML='<div id="empty" class="empty"><div class="hero">✦</div><h2>Test Nextura Cortexa Max</h2><p>Chat dibersihkan. Silakan kirim pertanyaan baru.</p></div>'};
+$('thinking').onchange=e=>localStorage.setItem('nextura_thinking',e.target.value);
+$('search').onchange=e=>localStorage.setItem('nextura_search',e.target.checked?'1':'0');
+$('review').onchange=e=>localStorage.setItem('nextura_review',e.target.checked?'1':'0');
+apiKey.onchange=e=>localStorage.setItem('nextura_test_key',e.target.value.trim());
+send.onclick=submit;
+
+async function submit(){
+  const text=prompt.value.trim(), key=apiKey.value.trim();
+  if(!text)return;
+  if(!key){setStatus('err','API key belum diisi');apiKey.focus();return}
+  localStorage.setItem('nextura_test_key',key);
+  addMessage('user',text);
+  history.push({role:'user',content:text});
+  prompt.value='';resize();send.disabled=true;setStatus('','Memproses…');
+  const started=performance.now();
+  const loading=addMessage('assistant','Sedang berpikir…');
+  try{
+    const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:MODEL,messages:history,thinking_level:$('thinking').value,search:$('search').checked,agent_search:$('search').checked,review:$('review').checked,stream:false})});
+    const data=await res.json().catch(()=>({}));
+    loading.remove();
+    if(!res.ok)throw new Error(data?.error?.message||`HTTP ${res.status}`);
+    const answer=data?.choices?.[0]?.message?.content||'(jawaban kosong)';
+    history.push({role:'assistant',content:answer});
+    const n=data.nextura||data.x_nextura||{};
+    const total=((performance.now()-started)/1000).toFixed(2);
+    const server=n.latency_ms?`${(Number(n.latency_ms)/1000).toFixed(2)}s server`:'server -';
+    const meta=`${MODEL} · ${n.thinking_level||$('thinking').value} · ${server} · ${total}s total${n.search_plugin?' · '+n.search_plugin:''}`;
+    addMessage('assistant',answer,meta);
+    setStatus('ok','Online · '+total+'s');
+  }catch(err){loading.remove();addMessage('assistant','Gagal: '+err.message,'',true);setStatus('err','Gagal request')}
+  finally{send.disabled=false;prompt.focus()}
+}
+</script>
+</body>
+</html>
