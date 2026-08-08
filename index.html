@@ -24,18 +24,18 @@
 <div class="app">
   <header>
     <div class="brand"><div class="logo">N</div><div><h1>Nextura AI</h1><p>Nextura Cortexa Max · Web Test</p></div></div>
-    <div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Belum dites</span></div>
+    <div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Siap dites</span></div>
   </header>
 
   <section class="settings">
-    <div class="field key"><label>API Key</label><input id="apiKey" type="password" autocomplete="off" placeholder="Masukkan NEXTURA_API_KEY" /></div>
+    <div class="field key"><label>API Key Test</label><input id="apiKey" type="password" autocomplete="off" /></div>
     <div class="field"><label>Thinking</label><select id="thinking"><option value="cepat">Cepat</option><option value="sedang">Sedang</option><option value="tinggi">Tinggi</option><option value="super">Super</option></select></div>
     <label class="toggle"><span>Search</span><input id="search" type="checkbox" /></label>
     <label class="toggle"><span>Review</span><input id="review" type="checkbox" checked /></label>
   </section>
 
   <main id="chat" class="chat">
-    <div id="empty" class="empty"><div class="hero">✦</div><h2>Test Nextura Cortexa Max</h2><p>Masukkan API key, pilih level thinking, lalu kirim pertanyaan. API key hanya disimpan lokal di browser ini dan tidak ada di source GitHub.</p></div>
+    <div id="empty" class="empty"><div class="hero">✦</div><h2>Test Nextura Cortexa Max</h2><p>API key test sudah terisi otomatis. Pilih level thinking lalu langsung kirim pertanyaan.</p></div>
   </main>
 
   <div class="composer">
@@ -48,11 +48,12 @@
 <script>
 const API_URL='https://tropical-bobbie-redcore-99fcb114.koyeb.app/v1/chat/completions';
 const MODEL='Nextura/cortexa-max';
+const DEFAULT_TEST_KEY='nextura-dev-ECM0OTFtvs5dmozKQR0cONSHuFvmFjoK';
 const $=id=>document.getElementById(id);
 const chat=$('chat'), prompt=$('prompt'), send=$('send'), apiKey=$('apiKey');
 let history=[];
 
-apiKey.value=localStorage.getItem('nextura_test_key')||'';
+apiKey.value=localStorage.getItem('nextura_test_key')||DEFAULT_TEST_KEY;
 $('thinking').value=localStorage.getItem('nextura_thinking')||'cepat';
 $('search').checked=localStorage.getItem('nextura_search')==='1';
 $('review').checked=localStorage.getItem('nextura_review')!=='0';
@@ -71,10 +72,8 @@ apiKey.onchange=e=>localStorage.setItem('nextura_test_key',e.target.value.trim()
 send.onclick=submit;
 
 async function submit(){
-  const text=prompt.value.trim(), key=apiKey.value.trim();
+  const text=prompt.value.trim(), key=apiKey.value.trim()||DEFAULT_TEST_KEY;
   if(!text)return;
-  if(!key){setStatus('err','API key belum diisi');apiKey.focus();return}
-  localStorage.setItem('nextura_test_key',key);
   addMessage('user',text);
   history.push({role:'user',content:text});
   prompt.value='';resize();send.disabled=true;setStatus('','Memproses…');
